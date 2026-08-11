@@ -1,0 +1,92 @@
+apiVersion: v1
+entries:
+  onyx:
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
+          description: values-localdev.yaml now disables the sandbox image prepuller.
+            Local kind clusters side-load the sandbox image (kind load + IfNotPresent),
+            so there is no registry pull to front-run, and with the localdev defaults
+            (:edge, pullPolicy Always) the prepuller would eagerly pull the ~3.3 GB
+            image from Docker Hub onto the kind node. Production values are unchanged.
+        - kind: fixed
+          description: Fixed "helm upgrade" failing with 'PriorityClass ... value: Forbidden;
+            may not be changed in an update' after the sandbox image prepuller landed in
+            0.8.6. PriorityClass.value is immutable and helm upgrade patches, so the
+            prepuller no longer ships a PriorityClass at all; it was buying very little.
+            Upgrading from 0.8.6 deletes it, and the prepuller runs at the cluster default
+            priority — set sandboxImagePrepull.priorityClassName to an existing class to
+            keep it preemptible. Running pods are unaffected, because pod priority is
+            resolved at admission. The chart now renders no cluster-scoped objects.
+      category: Productivity
+      images: |
+        - name: webserver
+          image: docker.io/onyxdotapp/onyx-web-server:latest
+        - name: background
+          image: docker.io/onyxdotapp/onyx-backend:latest
+      licenses: MIT
+    apiVersion: v2
+    appVersion: latest
+    created: "2026-08-11T14:08:32.091190987Z"
+    dependencies:
+    - alias: postgresql
+      condition: postgresqlOperator.enabled,postgresql.enabled
+      name: cloudnative-pg
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.26.0
+    - condition: postgresql.installCRDs,postgresqlOperator.enabled,postgresql.enabled
+      name: onyx-cnpg-crds
+      repository: file://../onyx-cnpg-crds
+      version: 0.1.0
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://opensearch-project.github.io/helm-charts
+      version: 3.6.0
+    - alias: nginx
+      condition: nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.13.3
+    - condition: redisOperator.enabled,redis.enabled
+      name: redis-operator
+      repository: https://ot-container-kit.github.io/helm-charts
+      version: 0.24.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://ot-container-kit.github.io/helm-charts
+      version: 0.16.6
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.4.0
+    - condition: codeInterpreter.enabled
+      name: code-interpreter
+      repository: https://onyx-dot-app.github.io/python-sandbox/
+      version: 0.4.3
+    description: Onyx application and Craft sandbox deployment chart
+    digest: aca123ec08b6ae6094cef36f956f25ac65adff9a1c56d22cefb15558b813ef82
+    home: https://www.onyx.app/
+    name: onyx
+    sources:
+    - https://github.com/onyx-dot-app/onyx
+    type: application
+    urls:
+    - https://Delorne007.github.io/onyx/onyx-0.8.9.tgz
+    version: 0.8.9
+  onyx-cnpg-crds:
+  - apiVersion: v2
+    created: "2026-08-11T14:08:32.094986614Z"
+    description: 'CloudNativePG CRDs for the Onyx chart, isolated in a CRDs-only subchart
+      so they can be toggled via the parent''s postgresql.installCRDs value. Helm
+      still gives crds/ its special pre-install treatment (applied before the main
+      manifest is built), so the CNPG Cluster CR in the parent chart passes build-phase
+      validation on a fresh install. Keep crds/cnpg-crds.yaml in byte-for-byte sync
+      with the cloudnative-pg subchart pinned in the parent Chart.yaml (verified by
+      onyx/scripts/check-cnpg-crds.sh). '
+    digest: bd17fff86675eb56f9149bdbb983029bb12c2168cc13203644907419639f6d34
+    name: onyx-cnpg-crds
+    type: application
+    urls:
+    - https://Delorne007.github.io/onyx/onyx-cnpg-crds-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-08-11T14:08:32.059886085Z"
