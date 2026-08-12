@@ -74,10 +74,6 @@ CONNECTOR_CLASS_MAP = {
         module_path="onyx.connectors.gitbook.connector",
         class_name="GitbookConnector",
     ),
-    DocumentSource.GURUTOM: ConnectorMapping(
-        module_path="onyx.connectors.gurutom.connector",
-        class_name="GuruTomConnector",
-    ),
     DocumentSource.ZULIP: ConnectorMapping(
         module_path="onyx.connectors.zulip.connector",
         class_name="ZulipConnector",
@@ -128,107 +124,4 @@ CONNECTOR_CLASS_MAP = {
     ),
     DocumentSource.SHAREPOINT: ConnectorMapping(
         module_path="onyx.connectors.sharepoint.connector",
-        class_name="SharepointConnector",
-    ),
-    DocumentSource.SALESFORCE: ConnectorMapping(
-        module_path="onyx.connectors.salesforce.connector",
-        class_name="SalesforceConnector",
-    ),
-    DocumentSource.DISCOURSE: ConnectorMapping(
-        module_path="onyx.connectors.discourse.connector",
-        class_name="DiscourseConnector",
-    ),
-    DocumentSource.AXERO: ConnectorMapping(
-        module_path="onyx.connectors.axero.connector",
-        class_name="AxeroConnector",
-    ),
-    DocumentSource.CLICKUP: ConnectorMapping(
-        module_path="onyx.connectors.clickup.connector",
-        class_name="ClickupConnector",
-    ),
-    DocumentSource.MEDIAWIKI: ConnectorMapping(
-        module_path="onyx.connectors.mediawiki.wiki",
-        class_name="MediaWikiConnector",
-    ),
-    DocumentSource.WIKIPEDIA: ConnectorMapping(
-        module_path="onyx.connectors.wikipedia.connector",
-        class_name="WikipediaConnector",
-    ),
-    DocumentSource.ASANA: ConnectorMapping(
-        module_path="onyx.connectors.asana.connector",
-        class_name="AsanaConnector",
-    ),
-    DocumentSource.S3: ConnectorMapping(
-        module_path="onyx.connectors.s3.connector",
-        class_name="S3Connector",
-    ),
-    DocumentSource.R2: ConnectorMapping(
-        module_path="onyx.connectors.blob.connector",
-        class_name="BlobStorageConnector",
-    ),
-    DocumentSource.GOOGLE_CLOUD_STORAGE: ConnectorMapping(
-        module_path="onyx.connectors.blob.connector",
-        class_name="BlobStorageConnector",
-    ),
-    DocumentSource.OCI_STORAGE: ConnectorMapping(
-        module_path="onyx.connectors.blob.connector",
-        class_name="BlobStorageConnector",
-    ),
-    DocumentSource.XENFORO: ConnectorMapping(
-        module_path="onyx.connectors.xenforo.connector",
-        class_name="XenforoConnector",
-    ),
-    DocumentSource.DISCORD: ConnectorMapping(
-        module_path="onyx.connectors.discord.connector",
-        class_name="DiscordConnector",
-    ),
-    DocumentSource.FRESHDESK: ConnectorMapping(
-        module_path="onyx.connectors.freshdesk.connector",
-        class_name="FreshdeskConnector",
-    ),
-    DocumentSource.FIREFLIES: ConnectorMapping(
-        module_path="onyx.connectors.fireflies.connector",
-        class_name="FirefliesConnector",
-    ),
-    DocumentSource.EGNYTE: ConnectorMapping(
-        module_path="onyx.connectors.egnyte.connector",
-        class_name="EgnyteConnector",
-    ),
-    DocumentSource.AIRTABLE: ConnectorMapping(
-        module_path="onyx.connectors.airtable.airtable_connector",
-        class_name="AirtableConnector",
-    ),
-    DocumentSource.HIGHSPOT: ConnectorMapping(
-        module_path="onyx.connectors.highspot.connector",
-        class_name="HighspotConnector",
-    ),
-    DocumentSource.DRUPAL_WIKI: ConnectorMapping(
-        module_path="onyx.connectors.drupal_wiki.connector",
-        class_name="DrupalWikiConnector",
-    ),
-    DocumentSource.IMAP: ConnectorMapping(
-        module_path="onyx.connectors.imap.connector",
-        class_name="ImapConnector",
-    ),
-    DocumentSource.BITBUCKET: ConnectorMapping(
-        module_path="onyx.connectors.bitbucket.connector",
-        class_name="BitbucketConnector",
-    ),
-    DocumentSource.TESTRAIL: ConnectorMapping(
-        module_path="onyx.connectors.testrail.connector",
-        class_name="TestRailConnector",
-    ),
-    DocumentSource.BRAINTRUST: ConnectorMapping(
-        module_path="onyx.connectors.braintrust.connector",
-        class_name="BraintrustConnector",
-    ),
-    DocumentSource.LUMAPPS: ConnectorMapping(
-        module_path="onyx.connectors.lumapps.connector",
-        class_name="LumAppsConnector",
-    ),
-    # just for integration tests
-    DocumentSource.MOCK_CONNECTOR: ConnectorMapping(
-        module_path="onyx.connectors.mock_connector.connector",
-        class_name="MockConnector",
-    ),
-}
+        class_name="Sharepoint
