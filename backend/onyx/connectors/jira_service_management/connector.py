@@ -294,3 +294,4 @@ class JiraServiceManagementConnector(
         self, checkpoint: ConnectorCheckpoint
     ) -> Generator[list[Document] | ConnectorFailure, None, None]:
         yield []
+         
