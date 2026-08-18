@@ -42,14 +42,13 @@ class JiraServiceManagementConnector(
                 "Missing required credentials (jira_url, jira_user_email, jira_api_token) for JSM."
             )
 
-        # Enforce clean base URL structure
         if not self.jira_url.startswith(("http://", "https://")):
             self.jira_url = f"https://{self.jira_url}"
 
         self.auth = HTTPBasicAuth(self.jira_user_email, self.jira_api_token)
         self.headers = {
             "Accept": "application/json",
-            "X-ExperimentalApi": "opt-in",  # Required for certain advanced JSM service desk endpoints
+            "X-ExperimentalApi": "opt-in",
         }
 
     @property
@@ -62,7 +61,6 @@ class JiraServiceManagementConnector(
         return JiraServiceManagementConnector(**credentials)
 
     def _get_service_desks(self) -> list[str]:
-        """Fetches target service desk IDs or discovers all accessible desks."""
         if self.service_desk_id:
             return [self.service_desk_id]
 
@@ -97,12 +95,10 @@ class JiraServiceManagementConnector(
     def _get_customer_requests(
         self, service_desk_id: str, start_time: SecondsSinceUnixEpoch
     ) -> Generator[list[dict[str, Any]], None, None]:
-        """Yields pages of JSM customer requests updated after start_time."""
         url = f"{self.jira_url}/rest/servicedeskapi/search/request"
         start = 0
         limit = JIRA_SLIM_PAGE_SIZE
 
-        # Use JSM-specific request filtering
         while True:
             jql = f"serviceDesk = {service_desk_id}"
             if start_time > 0:
@@ -110,7 +106,6 @@ class JiraServiceManagementConnector(
                 jql += f" AND updated >= '{dt.strftime('%Y-%m-%d %H:%M')}'"
 
             jql += " ORDER BY updated ASC"
-
             payload = {"jql": jql, "start": start, "limit": limit}
 
             try:
@@ -151,7 +146,6 @@ class JiraServiceManagementConnector(
                         if not req_key:
                             continue
 
-                        # Extract timestamp verification fields safely
                         created_data = req.get("createdDate", {})
                         epoch_ms = created_data.get("epochMillis")
 
@@ -177,7 +171,6 @@ class JiraServiceManagementConnector(
                 )
 
     def _fetch_request_comments(self, issue_key: str) -> list[str]:
-        """Extracts customer-visible public comments from the ticket thread."""
         comments = []
         url = f"{self.jira_url}/rest/servicedeskapi/request/{issue_key}/comment"
         start = 0
@@ -197,7 +190,8 @@ class JiraServiceManagementConnector(
                 values = data.get("values", [])
                 for comment in values:
                     body = comment.get("body", "")
-                    if body:
+                    # Security: Only include customer-facing public comments
+                    if body and comment.get("public", False):
                         comments.append(body)
 
                 if data.get("isLastPage", True) or not values:
@@ -232,7 +226,6 @@ class JiraServiceManagementConnector(
                 response.raise_for_status()
                 req_data = response.json()
 
-                # Extract request properties
                 summary = req_data.get("summary", "")
                 description = req_data.get("description", "")
 
@@ -244,12 +237,10 @@ class JiraServiceManagementConnector(
                 if description:
                     sections.append(TextSection(text=description, link=browse_link))
 
-                # Append conversational context sections from comments
                 comments = self._fetch_request_comments(issue_key)
                 for comment in comments:
                     sections.append(TextSection(text=comment, link=browse_link))
 
-                # Extract dates safely for RAG temporal weighting
                 created_date_data = req_data.get("createdDate", {})
                 epoch_ms = created_date_data.get("epochMillis")
                 doc_date = (
@@ -261,6 +252,7 @@ class JiraServiceManagementConnector(
                 doc_batch.append(
                     Document(
                         id=issue_key,
+                        semantic_identifier=f"{issue_key}: {summary}",
                         sections=sections,
                         source=self.source,
                         metadata={
